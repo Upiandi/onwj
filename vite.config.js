@@ -9,17 +9,20 @@ export default defineConfig({
       '@': path.resolve(__dirname, './src'),
     },
   },
-  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp'],
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.webp', '**/*.jpeg', '**/*.mp4'],
   build: {
     assetsInlineLimit: 0,
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          'vendor': ['react', 'react-dom', 'react-router-dom'],
+          'charts': ['recharts'],
+          'maps': ['leaflet', 'react-leaflet'],
+        },
+      },
+    },
   },
   server: {
     port: 3000,
-    proxy: {
-      '/api': {
-        target: 'http://localhost:8000',
-        changeOrigin: true,
-      },
-    },
   },
 });

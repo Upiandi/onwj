@@ -33,3 +33,10 @@ dist-ssr/
 
 # TypeScript
 *.tsbuildinfo
+
+# Vercel
+.vercel
+
+# Admin pages (not used in production)
+src/pages/admin/
+src/api/adminApi.js
