@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { FaHome, FaSpinner } from 'react-icons/fa'; 
+import { FaHome, FaSpinner } from 'react-icons/fa';
 import PageHero from '../components/PageHero';
 import bannerImage from '../assets/hero-bg.png';
-import toast from 'react-hot-toast';
-import beritaApi from '../services/BeritaService';
+import { dummyBeritaList, dummyBeritaCategories } from '../utils/dummyData';
 
 const BeritaHero = () => (
     <PageHero
@@ -20,10 +19,10 @@ const BeritaHero = () => (
 );
 
 const BeritaFilter = ({ categories, selected, onSelect, onSearch, searchTerm }) => (
-    <div className="container mx-auto px-8 lg:px-16 py-16">
+    <div className="section-container py-grid-8">
         <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <div className="flex flex-wrap gap-2">
-                {categories. map(cat => (
+                {categories.map(cat => (
                     <button
                         key={cat}
                         onClick={() => onSelect(cat)}
@@ -97,7 +96,7 @@ const ArticleCard = ({ article }) => (
 const ArticleGrid = ({ articles, loading }) => {
     if (loading) {
         return (
-            <div className="container mx-auto px-8 lg:px-16 pb-20">
+            <div className="section-container pb-grid-20">
                 <div className="flex items-center justify-center py-20">
                     <FaSpinner className="w-12 h-12 text-blue-600 animate-spin" />
                 </div>
@@ -106,7 +105,7 @@ const ArticleGrid = ({ articles, loading }) => {
     }
 
     return (
-        <div className="container mx-auto px-8 lg:px-16 pb-20">
+        <div className="section-container pb-grid-20">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 {articles.map(article => (
                     <ArticleCard key={article.id} article={article} />
@@ -134,11 +133,11 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
     }
 
     for (let i = startPage; i <= endPage; i++) {
-        pages. push(i);
+        pages.push(i);
     }
     
     return (
-        <nav className="flex justify-center items-center space-x-2 pb-20" aria-label="Pagination">
+        <nav className="flex justify-center items-center gap-grid-2 pb-grid-20" aria-label="Pagination">
             <button
                 onClick={() => onPageChange(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
@@ -197,91 +196,26 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
 };
 
 const BeritaTJSLPage = () => {
-    const [articles, setArticles] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loading] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
-    const [categories, setCategories] = useState(['All']);
+    const [categories] = useState(dummyBeritaCategories);
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchTerm, setSearchTerm] = useState('');
     const itemsPerPage = 9;
 
-    // Fetch berita on mount and when filters change
-    useEffect(() => {
-        fetchBerita();
-    }, [currentPage, selectedCategory, searchTerm]);
+    // Filter and search logic
+    const filteredArticles = dummyBeritaList.filter(article => {
+        const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
+        const matchesSearch = searchTerm.trim() === '' || 
+            article.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            article.short_description.toLowerCase().includes(searchTerm.toLowerCase());
+        return matchesCategory && matchesSearch;
+    });
 
-    // Fetch categories on mount
-    useEffect(() => {
-        fetchCategories();
-    }, []);
-
-    const fetchBerita = async () => {
-        try {
-            setLoading(true);
-            
-            const params = {
-                per_page: itemsPerPage,
-                page: currentPage,
-            };
-
-            if (selectedCategory !== 'All') {
-                params.category = selectedCategory;
-            }
-
-            if (searchTerm. trim()) {
-                params.search = searchTerm;
-            }
-
-            console.log('Fetching berita with params:', params);
-
-            const response = await beritaApi.getAll(params);
-
-            console.log('API Response:', response.data);
-
-            if (response.data.success) {
-                setArticles(response.data.data);
-                setTotalPages(response.data. meta.last_page);
-            } else {
-                toast.error('Data tidak ditemukan');
-                setArticles([]);
-            }
-        } catch (error) {
-            console.error('Error fetching berita:', error);
-            
-            if (error.response) {
-                console.error('Response error:', error.response);
-                toast.error(`Error: ${error.response.data.message || 'Gagal memuat berita'}`);
-            } else if (error.request) {
-                console.error('Request error:', error.request);
-                toast.error('Tidak dapat terhubung ke server.  Pastikan backend running.');
-            } else {
-                console.error('Error:', error.message);
-                toast.error(`Error: ${error.message}`);
-            }
-            
-            setArticles([]);
-        } finally {
-            setLoading(false);
-        }
-    };
-
-    const fetchCategories = async () => {
-        try {
-            const response = await beritaApi.getCategories();
-            
-            console.log('Categories response:', response. data);
-
-            if (response.data.success) {
-                const cats = ['All', ...response.data.data];
-                setCategories(cats);
-            }
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-            // Fallback to default categories
-            setCategories(['All', 'Sosial', 'Lingkungan', 'Pendidikan']);
-        }
-    };
+    // Pagination logic
+    const totalPages = Math.ceil(filteredArticles.length / itemsPerPage);
+    const startIndex = (currentPage - 1) * itemsPerPage;
+    const articles = filteredArticles.slice(startIndex, startIndex + itemsPerPage);
 
     const handleSelectCategory = (category) => {
         setSelectedCategory(category);
@@ -289,7 +223,7 @@ const BeritaTJSLPage = () => {
     };
 
     const handleSearch = (e) => {
-        setSearchTerm(e.target. value);
+        setSearchTerm(e.target.value);
         setCurrentPage(1);
     };
 

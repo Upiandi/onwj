@@ -155,7 +155,7 @@ const LaporanTahunanPage = () => {
       <ReportHero />
       <MediaSubNav />
       
-      <div className="container mx-auto px-8 lg:px-16 py-16">
+      <div className="section-container mx-auto px-8 lg:px-16 py-8">
         <div className="text-center mb-12">
           <h2 className="text-3xl lg:text-4xl font-heading font-bold text-secondary-900 mb-4">
             Laporan Tahunan

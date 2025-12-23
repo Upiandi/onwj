@@ -223,13 +223,9 @@ const StakeholderSection = ({ stakeholderRef }) => (
     <div className="section-container">
       {/* Header */}
       <div className="text-center mb-grid-10 sm:mb-grid-12">
-        <span className="section-label inline-block">MITRA KAMI</span>
         <h2 className="font-heading font-bold text-display-md sm:text-display-lg lg:text-display-xl text-secondary-900 mt-grid-3 text-center">
           Pemegang Saham
         </h2>
-        <p className="text-body-md sm:text-body-lg text-secondary-600 leading-relaxed text-center max-w-3xl mx-auto mt-grid-4">
-          Kami bekerja sama dengan berbagai institusi terkemuka untuk menciptakan nilai tambah bagi semua pihak.
-        </p>
       </div>
 
       {/* Logos Grid - SEJAJAR */}

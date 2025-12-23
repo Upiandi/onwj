@@ -1,5 +1,5 @@
 import React from 'react';
-import companyImage from '../../assets/contoh2.png';
+import companyImage from '../../assets/company/Peta.png';
 import { FaBuilding, FaUsers, FaMapMarkerAlt, FaBolt, FaArrowRight } from 'react-icons/fa';
 
 /**
@@ -12,10 +12,9 @@ import { FaBuilding, FaUsers, FaMapMarkerAlt, FaBolt, FaArrowRight } from 'react
  */
 const PProfile = () => {
   const keyStats = [
-    { icon: FaBuilding, value: "2016", label: "Didirikan" },
-    { icon: FaUsers, value: "1.000+", label: "Karyawan" },
-    { icon: FaMapMarkerAlt, value: "6", label: "Provinsi" },
-    { icon: FaBolt, value: "500", label: "MW Kapasitas" },
+    { icon: FaBuilding, value: "2017", label: "Didirikan" },
+    { icon: FaMapMarkerAlt, value: "1", label: "Provinsi" },
+    { icon: FaMapMarkerAlt, value: "5", label: "Kota" },
   ];
 
   return (
@@ -36,17 +35,13 @@ const PProfile = () => {
           <p className="text-body-md lg:text-body-lg font-semibold text-primary-600 mb-grid-3">
             Pengelola Partisipasi Indonesia 10% Daerah
           </p>
-          
-          <p className="text-body-sm text-secondary-600 leading-relaxed">
-            Mengoptimalkan nilai tambah bagi masyarakat dan mendukung pembangunan berkelanjutan di wilayah operasi sejak 2016
-          </p>
         </div>
 
         {/* Main Content - 3 Column Balanced Layout */}
         <div className="max-w-6xl mx-auto">
           
           {/* Stats Bar - Horizontal */}
-          <div className="grid grid-cols-2 lg:grid-cols-4 gap-grid-4 mb-grid-6">
+          <div className="grid grid-cols-2 lg:grid-cols-3 gap-grid-4 mb-grid-6">
             {keyStats.map((stat, index) => {
               const IconComponent = stat.icon;
               return (
@@ -82,7 +77,7 @@ const PProfile = () => {
                 />
                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-secondary-900/90 to-transparent p-grid-4">
                   <p className="text-body-sm text-white font-medium">
-                    Operasional lapangan migas di 6 provinsi strategis Indonesia
+                    Lapangan Migas Hulu Jabar ONWJ
                   </p>
                 </div>
               </div>
@@ -119,13 +114,9 @@ const PProfile = () => {
                 </h3>
                 
                 <div className="flex items-center gap-grid-3 mb-grid-3">
-                  <div className="flex-shrink-0 w-14 h-14 rounded bg-primary-50 flex flex-col items-center justify-center">
-                    <span className="text-body-xl font-bold text-primary-600 leading-none">8+</span>
-                    <span className="text-body-xs text-primary-600">Tahun</span>
-                  </div>
                   <div className="flex-1">
                     <p className="text-body-sm text-secondary-700 leading-relaxed">
-                      Sejak 2016, kami telah berkembang menjadi perusahaan terdepan dalam pengelolaan aset energi
+                      Sejak 2017, kami telah berkembang menjadi perusahaan terdepan dalam pengelolaan aset energi
                     </p>
                   </div>
                 </div>

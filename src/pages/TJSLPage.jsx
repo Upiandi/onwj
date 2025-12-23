@@ -229,145 +229,145 @@ const TJSLBeritaSection = ({ featuredNews, latestNews }) => (
   </section>
 );
 
-const TJSLVoicesSection = ({ testimonials }) => {
-  const [activeTestimonial, setActiveTestimonial] = useState(0);
+// const TJSLVoicesSection = ({ testimonials }) => {
+//   const [activeTestimonial, setActiveTestimonial] = useState(0);
 
-  useEffect(() => {
-    if (testimonials.length === 0) return;
-    const timer = setInterval(() => {
-      setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-    }, 5000);
-    return () => clearInterval(timer);
-  }, [testimonials.length]);
+//   useEffect(() => {
+//     if (testimonials.length === 0) return;
+//     const timer = setInterval(() => {
+//       setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+//     }, 5000);
+//     return () => clearInterval(timer);
+//   }, [testimonials.length]);
 
-  const handlePrev = () => {
-    setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
-  };
+//   const handlePrev = () => {
+//     setActiveTestimonial((prev) => (prev === 0 ? testimonials.length - 1 : prev - 1));
+//   };
 
-  const handleNext = () => {
-    setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
-  };
+//   const handleNext = () => {
+//     setActiveTestimonial((prev) => (prev + 1) % testimonials.length);
+//   };
 
-  if (testimonials.length === 0) {
-    return (
-      <section className="bg-gradient-to-br from-blue-600 to-blue-800 py-16">
-        <div className="container mx-auto px-8 lg:px-16 text-center text-white">
-          <h2 className="text-3xl font-bold mb-4">Voices From The Community</h2>
-          <p className="text-blue-100">Testimoni sedang dimuat...</p>
-        </div>
-      </section>
-    );
-  }
+//   if (testimonials.length === 0) {
+//     return (
+//       <section className="bg-gradient-to-br from-blue-600 to-blue-800 py-16">
+//         <div className="container mx-auto px-8 lg:px-16 text-center text-white">
+//           <h2 className="text-3xl font-bold mb-4">Voices From Communities</h2>
+//           <p className="text-blue-100">Testimoni sedang dimuat...</p>
+//         </div>
+//       </section>
+//     );
+//   }
 
-  return (
-    <section className="bg-gradient-to-br from-blue-600 to-blue-800 py-16 relative overflow-hidden">
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 right-0 w-72 h-72 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
-      </div>
+//   return (
+//     <section className="bg-gradient-to-br from-blue-600 to-blue-800 py-16 relative overflow-hidden">
+//       <div className="absolute inset-0 opacity-10">
+//         <div className="absolute top-0 left-0 w-72 h-72 bg-white rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2"></div>
+//         <div className="absolute bottom-0 right-0 w-72 h-72 bg-white rounded-full blur-3xl translate-x-1/2 translate-y-1/2"></div>
+//       </div>
 
-      <div className="container mx-auto px-8 lg:px-16 relative z-10">
-        <h2 className="text-3xl font-bold text-center mb-3 text-white">
-          Voices From The Community
-        </h2>
-        <p className="text-center text-blue-100 mb-12 max-w-2xl mx-auto text-sm">
-          Dengarkan langsung testimoni dari masyarakat yang merasakan dampak positif program TJSL kami
-        </p>
+//       <div className="container mx-auto px-8 lg:px-16 relative z-10">
+//         <h2 className="text-3xl font-bold text-center mb-3 text-white">
+//           Voices From Communities
+//         </h2>
+//         <p className="text-center text-blue-100 mb-12 max-w-2xl mx-auto text-sm">
+//           Dengarkan langsung testimoni dari masyarakat yang merasakan dampak positif program TJSL kami
+//         </p>
 
-        <div className="max-w-3xl mx-auto relative">
-          <div className="relative h-[280px] md:h-[240px]">
-            {testimonials.map((testimonial, index) => (
-              <div
-                key={testimonial.id}
-                className={`absolute inset-0 transition-all duration-700 ease-in-out ${
-                  index === activeTestimonial
-                    ? 'opacity-100 translate-x-0 scale-100'
-                    : index < activeTestimonial
-                    ? 'opacity-0 -translate-x-full scale-95'
-                    : 'opacity-0 translate-x-full scale-95'
-                }`}
-              >
-                <div className="bg-white rounded-xl shadow-2xl p-6 md:p-8 h-full flex flex-col justify-between">
-                  <div className="mb-4">
-                    <svg className="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432. 917-3.995 3.638-3.995 5.849h4v10h-9. 983zm-14.017 0v-7. 391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433. 917-3.996 3. 638-3.996 5. 849h3.983v10h-9.983z"/>
-                    </svg>
-                  </div>
-                  <blockquote className="text-gray-700 text-base md:text-lg leading-relaxed mb-6 flex-grow">
-                    "{testimonial.testimonial}"
-                  </blockquote>
-                  <div className="flex items-center gap-3">
-                    {testimonial.full_avatar_url ?  (
-                      <img 
-                        src={testimonial. full_avatar_url} 
-                        alt={testimonial.name} 
-                        className="w-12 h-12 rounded-full border-4 border-blue-100 shadow-md object-cover"
-                        onError={(e) => {
-                          e.target.style.display = 'none';
-                          e.target.nextSibling. style.display = 'flex';
-                        }}
-                      />
-                    ) : null}
-                    <div 
-                      className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md"
-                      style={{ display: testimonial.full_avatar_url ?  'none' : 'flex' }}
-                    >
-                      {testimonial.name.charAt(0)}
-                    </div>
-                    <div>
-                      <cite className="font-bold text-gray-900 text-base not-italic block">
-                        {testimonial. name}
-                      </cite>
-                      <p className="text-blue-600 text-xs font-medium">
-                        {testimonial.location}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
+//         <div className="max-w-3xl mx-auto relative">
+//           <div className="relative h-[280px] md:h-[240px]">
+//             {testimonials.map((testimonial, index) => (
+//               <div
+//                 key={testimonial.id}
+//                 className={`absolute inset-0 transition-all duration-700 ease-in-out ${
+//                   index === activeTestimonial
+//                     ? 'opacity-100 translate-x-0 scale-100'
+//                     : index < activeTestimonial
+//                     ? 'opacity-0 -translate-x-full scale-95'
+//                     : 'opacity-0 translate-x-full scale-95'
+//                 }`}
+//               >
+//                 <div className="bg-white rounded-xl shadow-2xl p-6 md:p-8 h-full flex flex-col justify-between">
+//                   <div className="mb-4">
+//                     <svg className="w-10 h-10 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+//                       <path d="M14.017 21v-7.391c0-5.704 3.731-9.57 8.983-10.609l.995 2.151c-2.432. 917-3.995 3.638-3.995 5.849h4v10h-9. 983zm-14.017 0v-7. 391c0-5.704 3.748-9.57 9-10.609l.996 2.151c-2.433. 917-3.996 3. 638-3.996 5. 849h3.983v10h-9.983z"/>
+//                     </svg>
+//                   </div>
+//                   <blockquote className="text-gray-700 text-base md:text-lg leading-relaxed mb-6 flex-grow">
+//                     "{testimonial.testimonial}"
+//                   </blockquote>
+//                   <div className="flex items-center gap-3">
+//                     {testimonial.full_avatar_url ?  (
+//                       <img 
+//                         src={testimonial. full_avatar_url} 
+//                         alt={testimonial.name} 
+//                         className="w-12 h-12 rounded-full border-4 border-blue-100 shadow-md object-cover"
+//                         onError={(e) => {
+//                           e.target.style.display = 'none';
+//                           e.target.nextSibling. style.display = 'flex';
+//                         }}
+//                       />
+//                     ) : null}
+//                     <div 
+//                       className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center text-white font-bold text-lg shadow-md"
+//                       style={{ display: testimonial.full_avatar_url ?  'none' : 'flex' }}
+//                     >
+//                       {testimonial.name.charAt(0)}
+//                     </div>
+//                     <div>
+//                       <cite className="font-bold text-gray-900 text-base not-italic block">
+//                         {testimonial. name}
+//                       </cite>
+//                       <p className="text-blue-600 text-xs font-medium">
+//                         {testimonial.location}
+//                       </p>
+//                     </div>
+//                   </div>
+//                 </div>
+//               </div>
+//             ))}
+//           </div>
 
-          <button
-            onClick={handlePrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-10 bg-white text-blue-600 p-3 rounded-full shadow-xl hover:bg-blue-50 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
-            aria-label="Previous testimonial"
-          >
-            <FaChevronLeft className="w-4 h-4" />
-          </button>
-          <button
-            onClick={handleNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-10 bg-white text-blue-600 p-3 rounded-full shadow-xl hover:bg-blue-50 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
-            aria-label="Next testimonial"
-          >
-            <FaChevronRight className="w-4 h-4" />
-          </button>
+//           <button
+//             onClick={handlePrev}
+//             className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-3 md:-translate-x-10 bg-white text-blue-600 p-3 rounded-full shadow-xl hover:bg-blue-50 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
+//             aria-label="Previous testimonial"
+//           >
+//             <FaChevronLeft className="w-4 h-4" />
+//           </button>
+//           <button
+//             onClick={handleNext}
+//             className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-3 md:translate-x-10 bg-white text-blue-600 p-3 rounded-full shadow-xl hover:bg-blue-50 transition-all hover:scale-110 focus:outline-none focus:ring-4 focus:ring-blue-300"
+//             aria-label="Next testimonial"
+//           >
+//             <FaChevronRight className="w-4 h-4" />
+//           </button>
 
-          <div className="flex justify-center gap-2 mt-6">
-            {testimonials.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setActiveTestimonial(index)}
-                className={`w-2 h-2 rounded-full transition-all ${
-                  activeTestimonial === index
-                    ? 'bg-white w-6'
-                    : 'bg-blue-300 hover:bg-blue-200'
-                }`}
-                aria-label={`Go to testimonial ${index + 1}`}
-              />
-            ))}
-          </div>
-        </div>
+//           <div className="flex justify-center gap-2 mt-6">
+//             {testimonials.map((_, index) => (
+//               <button
+//                 key={index}
+//                 onClick={() => setActiveTestimonial(index)}
+//                 className={`w-2 h-2 rounded-full transition-all ${
+//                   activeTestimonial === index
+//                     ? 'bg-white w-6'
+//                     : 'bg-blue-300 hover:bg-blue-200'
+//                 }`}
+//                 aria-label={`Go to testimonial ${index + 1}`}
+//               />
+//             ))}
+//           </div>
+//         </div>
 
-        <div className="mt-8 text-center">
-          <p className="text-blue-100 text-xs uppercase tracking-wider">
-            Testimonial {activeTestimonial + 1} dari {testimonials.length}
-          </p>
-        </div>
-      </div>
-    </section>
-  );
-};
+//         <div className="mt-8 text-center">
+//           <p className="text-blue-100 text-xs uppercase tracking-wider">
+//             Testimonial {activeTestimonial + 1} dari {testimonials.length}
+//           </p>
+//         </div>
+//       </div>
+//     </section>
+//   );
+// };
 
 const TJSLPage = () => {
   const [quickFacts, setQuickFacts] = useState([]);
@@ -479,7 +479,7 @@ const TJSLPage = () => {
       <TJSLProfile quickFacts={quickFacts} />
       <ProgramUnggulan slides={programs} />
       <TJSLBeritaSection featuredNews={featuredNews} latestNews={latestNews} />
-      <TJSLVoicesSection testimonials={testimonials} />
+      {/* <TJSLVoicesSection testimonials={testimonials} /> */}
     </div>
   );
 };

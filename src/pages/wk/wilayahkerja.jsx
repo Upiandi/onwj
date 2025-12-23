@@ -2,74 +2,46 @@ import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import './wilayahkerja.css';
 import Peta from './Peta.png';
-import produksiBulananService from '../../services/ProduksiBulananService';
-import wilayahKerjaService from '../../services/WilayahKerjaService';
+import { dummyAreas } from '../../utils/dummyData';
 
 const Wilayah = () => {
   const navigate = useNavigate();
   const [active, setActive] = useState(null);
   const [hoveredId, setHoveredId] = useState(null);
   const [activeTab, setActiveTab] = useState('all');
-  const [allData, setAllData] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [allData] = useState(() => dummyAreas.map(a => ({
+    id: a.id,
+    dbId: a.dbId,
+    name: a.name,
+    category: a.category,
+    position: { 
+      x: Math.min(100, Math.max(0, Number(a.position_x))),
+      y: Math.min(100, Math.max(0, Number(a.position_y))),
+    },
+    color: a.color,
+    description: a.description,
+    facilities: a.facilities || [],
+    production: a.production || '',
+    wells: a.wells || 0,
+    depth: a.depth || '',
+    pressure: a.pressure || '',
+    temperature: a.temperature || '',
+    programs: a.programs || [],
+    beneficiaries: a.beneficiaries || '',
+    budget: a.budget || '',
+    duration: a.duration || '',
+    impact: a.impact || '',
+    status: a.category === 'TEKKOM' ? 'Operasional' : 'Aktif',
+    related_news_id: null,
+    related_news_slug: null,
+    related_news_title: null,
+  })));
+  const [loading] = useState(false);
+  const [error] = useState(null);
   
-  // Fetch data from API
+  // Using dummy data (no backend fetch)
   useEffect(() => {
-    const fetchAreas = async () => {
-      setLoading(true);
-      setError(null);
-      try {
-        const response = await wilayahKerjaService.getAll();
-        
-        if (response.data.success) {
-          // Transform data to match component structure
-          const transformedData = response.data.data.map(area => ({
-            id: area. area_id,
-            dbId: area.id, // ✅ Database ID untuk reference
-            name: area.name,
-            category: area.category,
-            position: { 
-              x: parseFloat(area.position_x), 
-              y: parseFloat(area.position_y) 
-            },
-            color: area.color,
-            description: area.description,
-            // TEKKOM fields
-            facilities: area.facilities || [],
-            production: area.production || '',
-            wells: area.wells || 0,
-            depth: area.depth || '',
-            pressure: area.pressure || '',
-            temperature: area. temperature || '',
-            // TJSL fields
-            programs: area.programs || [],
-            beneficiaries: area.beneficiaries || '',
-            budget: area.budget || '',
-            duration: area.duration || '',
-            impact: area.impact || '',
-            // Common fields
-            status: area.status,
-            // ✅ Related news fields
-            related_news_id: area.related_news_id || null,
-            related_news_slug: area.related_news?. slug || null,
-            related_news_title: area.related_news?.title || null,
-          }));
-          
-          setAllData(transformedData);
-          console.log('✅ Data loaded:', transformedData. length, 'areas');
-        } else {
-          setError('Failed to load data');
-        }
-      } catch (error) {
-        console.error('❌ Error fetching wilayah kerja:', error);
-        setError(error.response?.data?.message || 'Gagal memuat data wilayah kerja');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchAreas();
+    // Data already initialized from dummyAreas
   }, []);
   
   // Memoized filtered data
@@ -370,10 +342,6 @@ const MapLegend = ({ activeTab, pengeboranData, tjslData }) => (
         </div>
       </div>
     )}
-
-    <p className="text-xs text-gray-500 mt-3">
-      💡 <strong>Tip:</strong> Hover pada marker untuk melihat nama area.  Klik marker untuk melihat detail lengkap.
-    </p>
   </div>
 );
 
@@ -522,99 +490,25 @@ const ModalHeader = ({ area, onClose }) => (
 
 // TEKKOM Modal Content Component
 const TekkomModalContent = ({ area, activeTab }) => {
-  const [produksiData, setProduksiData] = useState([]);
-  const [loadingProduksi, setLoadingProduksi] = useState(false);
-  const [latestProd, setLatestProd] = useState(null);
-
-  // Fetch produksi data when tab is 'produksi'
-  useEffect(() => {
-    if (activeTab === 'produksi') {
-      fetchProduksi();
-    }
-  }, [activeTab, area.dbId]);
-
-  // Always fetch latest produksi (for Overview tab technical/facilities)
-  useEffect(() => {
-    const fetchLatest = async () => {
-      try {
-        const resp = await produksiBulananService.getAll({ wk_tekkom_id: area.dbId });
-        if (resp.data?. success) {
-          const items = Array.isArray(resp.data. data) ? resp.data.data. slice() : [];
-          items.sort((a, b) => (b.tahun - a.tahun) || (b.bulan - a.bulan));
-          setLatestProd(items[0] || null);
-        } else {
-          setLatestProd(null);
-        }
-      } catch (e) {
-        console.error('❌ Error fetching latest produksi for overview:', e);
-        setLatestProd(null);
-      }
-    };
-    fetchLatest();
-  }, [area.dbId]);
-
-  const fetchProduksi = async () => {
-    setLoadingProduksi(true);
-    try {
-      const response = await produksiBulananService.getAll({
-        wk_tekkom_id: area.dbId,
-        tahun: new Date().getFullYear(),
-      });
-      
-      if (response.data. success) {
-        setProduksiData(response.data.data);
-      }
-    } catch (error) {
-      console.error('Error fetching produksi:', error);
-      setProduksiData([]);
-    } finally {
-      setLoadingProduksi(false);
-    }
+  const latestProd = {
+    wells: area.wells,
+    depth: area.depth,
+    pressure: area.pressure,
+    temperature: area.temperature,
+    status: area.status || (area.category === 'TEKKOM' ? 'Operasional' : 'Aktif'),
+    periode: null,
+    facilities: area.facilities || [],
   };
 
   if (activeTab === 'produksi') {
     return (
       <div>
-        <h4 className="modal-section-title" style={{ fontSize: '16px', fontWeight:  '700', marginBottom: '12px', color: '#111827' }}>
+        <h4 className="modal-section-title" style={{ fontSize: '16px', fontWeight: '700', marginBottom: '12px', color: '#111827' }}>
           📊 Data Produksi Per Bulan
         </h4>
-        
-        {loadingProduksi ? (
-          <div className="flex justify-center items-center py-8">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-          </div>
-        ) : produksiData.length === 0 ? (
-          <div className="text-center py-8 bg-gray-50 rounded-lg">
-            <p className="text-gray-500">Belum ada data produksi untuk area ini</p>
-          </div>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#f3f4f6', color: '#374151' }}>
-                  <th style={{ textAlign: 'left', padding:  '10px', fontWeight: 700 }}>Bulan</th>
-                  <th style={{ textAlign: 'right', padding: '10px', fontWeight: 700 }}>Minyak (BOPD)</th>
-                  <th style={{ textAlign: 'right', padding: '10px', fontWeight: 700 }}>Gas (MMSCFD)</th>
-                  <th style={{ textAlign: 'left', padding: '10px', fontWeight: 700 }}>Catatan</th>
-                </tr>
-              </thead>
-              <tbody>
-                {produksiData.map((row) => (
-                  <tr key={row.id} style={{ borderBottom: '1px solid #e5e7eb' }}>
-                    <td style={{ padding:  '10px', fontWeight: 600 }}>{row.periode}</td>
-                    <td style={{ padding: '10px', color: '#2563eb', fontWeight: 700, textAlign: 'right' }}>
-                      {row.produksi_minyak ?  Number(row.produksi_minyak).toLocaleString('id-ID', { minimumFractionDigits: 2 }) : '-'}
-                    </td>
-                    <td style={{ padding:  '10px', color: '#059669', fontWeight: 700, textAlign: 'right' }}>
-                      {row.produksi_gas ? Number(row.produksi_gas).toLocaleString('id-ID', { minimumFractionDigits: 2 }) : '-'}
-                    </td>
-                    <td style={{ padding: '10px', color: '#6b7280' }}>{row.catatan || '-'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+        <div className="text-center py-8 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Data produksi bulanan (dummy) belum tersedia.</p>
+        </div>
       </div>
     );
   }
@@ -669,9 +563,9 @@ const TekkomModalContent = ({ area, activeTab }) => {
         <h4 className="modal-section-title" style={{ fontSize: '16px', fontWeight: '600', marginBottom: '12px', color: '#374151' }}>
           🏭 Fasilitas & Infrastruktur
         </h4>
-        {latestProd?.facilities && latestProd.facilities.length > 0 ? (
+        {area?.facilities && area.facilities.length > 0 ? (
           <ul style={{ listStyle: 'none', padding: 0, margin: 0, marginBottom: '20px' }}>
-            {latestProd. facilities.map((f, i) => (
+            {area.facilities.map((f, i) => (
               <ListItem key={i} text={f} color={area.color} />
             ))}
           </ul>

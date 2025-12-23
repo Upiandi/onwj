@@ -113,12 +113,12 @@ const Footer = () => {
   // ✅ Dynamic contact info (prioritize contact_ fields, fallback to company_ fields)
   const contact = {
     phone: { 
-      label: settings.contact_phone || settings.company_phone || '+62 21 3793 7360', 
-      href: `tel:${(settings.contact_phone || settings.company_phone || '+622137937360').replace(/\s/g, '')}` 
+      label: settings.contact_phone || settings.company_phone || '+62 00 0000 0000', 
+      href: `tel:${(settings.contact_phone || settings.company_phone || '+620000000000').replace(/\s/g, '')}` 
     },
     email: { 
-      label: settings.contact_email || settings.company_email || 'info@mhjonwj.co.id', 
-      href: `mailto:${settings.contact_email || settings.company_email || 'info@mhjonwj.co.id'}` 
+      label: settings.contact_email || settings.company_email || 'sekretariat@migashulujabaronwj.co.id', 
+      href: `mailto:${settings.contact_email || settings.company_email || 'sekretariat@migashulujabaronwj.co.id'}` 
     },
     address: settings.company_address || 'Jl. Jakarta No. 40, Kebonwaru, Batununggal, Kota Bandung, Jawa Barat 40272',
   };

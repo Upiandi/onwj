@@ -1,8 +1,15 @@
 import React, { useState, useEffect, useRef, useCallback, useMemo } from 'react';
-import contoh1 from '../../assets/contoh1.png';
-import contoh2 from '../../assets/contoh2.png';
-import contoh3 from '../../assets/contoh3.png';
-import contoh4 from '../../assets/contoh4.png';
+import contoh1 from '../../assets/company/Image1.png';
+import contoh2 from '../../assets/company/Image2.png';
+import contoh3 from '../../assets/company/Image3.png';
+import contoh5 from '../../assets/company/Image5.png';
+import contoh6 from '../../assets/company/Image6.png';
+import contoh7 from '../../assets/company/Image7.png';
+import contoh8 from '../../assets/company/Image8.png';
+import contoh9 from '../../assets/company/Image9.png';
+import contoh10 from '../../assets/company/Image10.png';
+import contoh11 from '../../assets/company/Image11.png';
+import contoh12 from '../../assets/company/Image12.png';
 
 /**
  * Constants
@@ -18,113 +25,105 @@ const TRANSITION_DURATION = 600;
 const PSejarah = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(false);
-  const [progress, setProgress] = useState(0); // 0-100 across ALL slides
+  const [, forceUpdate] = useState(0);
   
   const animationFrameRef = useRef(null);
   const autoAdvanceTimeoutRef = useRef(null);
+  const progressStartTimeRef = useRef(Date.now());
+  const targetIndexRef = useRef(0);
   
-  const images = useMemo(() => [contoh1, contoh2, contoh3, contoh4], []);
+  const images = useMemo(() => [contoh1, contoh2, contoh3, contoh5, contoh6, contoh7, contoh8, contoh9, contoh10, contoh11, contoh12], []);
   
   const timelineData = useMemo(() => [
     {
-      year: 2010,
+      year: 2017,
       title: "Fondasi Awal",
       description: "Persiapan strategis dan studi kelayakan untuk pengelolaan aset energi daerah",
       image: images[0]
     },
     {
-      year: 2011,
       title: "Pembentukan Struktur",
       description: "Pembentukan struktur organisasi dan tim manajemen profesional",
       image: images[1]
     },
     {
-      year: 2012,
       title: "Pengembangan Kapasitas",
       description: "Investasi dalam pengembangan SDM dan infrastruktur operasional",
       image: images[2]
     },
     {
-      year: 2013,
       title: "Ekspansi Regional",
       description: "Perluasan jangkauan operasional ke provinsi-provinsi strategis",
       image: images[3]
     },
     {
-      year: 2014,
       title: "Kemitraan Strategis",
       description: "Membangun kolaborasi dengan stakeholder pemerintah dan industri",
-      image: images[0]
+      image: images[4]
     },
     {
-      year: 2015,
       title: "Optimalisasi Proses",
       description: "Implementasi sistem manajemen modern dan best practices",
-      image: images[1]
+      image: images[5]
     },
     {
-      year: 2016,
       title: "Pendirian Resmi",
       description: "Pendirian resmi perusahaan sebagai pengelola Partisipasi Indonesia 10%",
       highlight: true,
-      image: images[2]
+      image: images[6]
     },
     {
-      year: 2017,
       title: "Operasional Penuh",
       description: "Memulai operasional penuh dengan tim 1.000+ profesional",
-      image: images[3]
+      image: images[7]
     },
     {
       year: 2018,
       title: "Diversifikasi Portofolio",
       description: "Diversifikasi portofolio aset energi untuk keberlanjutan",
-      image: images[0]
+      image: images[8]
+    },
+    {
+      title: "Inovasi Digital",
+      description: "Transformasi digital dan adopsi teknologi dalam operasional",
+      image: images[9]
     },
     {
       year: 2019,
-      title: "Inovasi Digital",
-      description: "Transformasi digital dan adopsi teknologi dalam operasional",
-      image: images[1]
+      title: "Resiliensi",
+      description: "Mempertahankan operasional optimal di tengah tantangan global",
+      image: images[10]
+    },
+    {
+      title: "Pertumbuhan Berkelanjutan",
+      description: "Fokus pada pembangunan berkelanjutan dan ESG",
+      image: images[11]
     },
     {
       year: 2020,
-      title: "Resiliensi",
-      description: "Mempertahankan operasional optimal di tengah tantangan global",
-      image: images[2]
-    },
-    {
-      year: 2021,
-      title: "Pertumbuhan Berkelanjutan",
-      description: "Fokus pada pembangunan berkelanjutan dan ESG",
-      image: images[3]
-    },
-    {
-      year: 2022,
       title: "Masa Depan Energi",
       description: "Komitmen menuju transisi energi bersih dan net-zero emission",
-      image: images[0]
+      image: images[12]
     }
   ], [images]);
 
   const totalSlides = timelineData.length;
 
-  // Continuous progress animation (0-100% linear)
-  useEffect(() => {
-    const totalDuration = AUTO_INTERVAL * totalSlides; // Total time for all slides
-    const startTime = Date.now();
-    const initialProgress = (activeIndex / totalSlides) * 100;
+  // Single source of truth for progress calculation
+  const getProgress = useCallback(() => {
+    const elapsed = Date.now() - progressStartTimeRef.current;
+    const slideProgress = Math.min(elapsed / AUTO_INTERVAL, 1);
+    const baseProgress = (activeIndex / totalSlides) * 100;
+    const nextProgress = ((activeIndex + 1) / totalSlides) * 100;
     
+    return baseProgress + (slideProgress * (nextProgress - baseProgress));
+  }, [activeIndex, totalSlides]);
+
+  // Single animation loop for smooth progress
+  useEffect(() => {
     const animate = () => {
-      const elapsed = Date.now() - startTime;
-      const progressIncrement = (elapsed / AUTO_INTERVAL) * (100 / totalSlides);
-      const newProgress = Math.min(initialProgress + progressIncrement, 100);
-      
-      setProgress(newProgress);
-      
-      if (newProgress < 100) {
-        animationFrameRef.current = requestAnimationFrame(animate);
-      }
+      forceUpdate(n => n + 1); // Force re-render to show progress animation
+      animationFrameRef.current = requestAnimationFrame(animate);
     };
     
     animationFrameRef.current = requestAnimationFrame(animate);
@@ -134,23 +133,22 @@ const PSejarah = () => {
         cancelAnimationFrame(animationFrameRef.current);
       }
     };
-  }, [activeIndex, totalSlides]);
+  }, []);
 
   // Auto-advance to next slide
   useEffect(() => {
+    progressStartTimeRef.current = Date.now();
+    
     autoAdvanceTimeoutRef.current = setTimeout(() => {
       const nextIndex = (activeIndex + 1) % totalSlides;
       
-      // Smooth transition
       setIsTransitioning(true);
       
       setTimeout(() => {
         setActiveIndex(nextIndex);
+        targetIndexRef.current = nextIndex;
+        progressStartTimeRef.current = Date.now();
         setIsTransitioning(false);
-        
-        // Set progress to exact next slide position
-        const nextProgress = (nextIndex / totalSlides) * 100;
-        setProgress(nextProgress);
       }, TRANSITION_DURATION / 2);
       
     }, AUTO_INTERVAL);
@@ -162,42 +160,30 @@ const PSejarah = () => {
     };
   }, [activeIndex, totalSlides]);
 
-  // Manual navigation
+  // Manual navigation with instant progress reset
   const goToSlide = useCallback((targetIndex) => {
     if (targetIndex === activeIndex || isTransitioning) return;
     
-    // Cancel animations
-    if (animationFrameRef.current) {
-      cancelAnimationFrame(animationFrameRef.current);
-    }
+    // Cancel auto-advance
     if (autoAdvanceTimeoutRef.current) {
       clearTimeout(autoAdvanceTimeoutRef.current);
     }
     
     setIsTransitioning(true);
+    targetIndexRef.current = targetIndex;
     
     setTimeout(() => {
       setActiveIndex(targetIndex);
+      progressStartTimeRef.current = Date.now();
       setIsTransitioning(false);
-      
-      // Set progress to exact target position
-      const targetProgress = (targetIndex / totalSlides) * 100;
-      setProgress(targetProgress);
     }, TRANSITION_DURATION / 2);
     
-  }, [activeIndex, isTransitioning, totalSlides]);
-
-  const goToPrev = () => {
-    const prevIndex = activeIndex === 0 ? totalSlides - 1 : activeIndex - 1;
-    goToSlide(prevIndex);
-  };
-
-  const goToNext = () => {
-    const nextIndex = (activeIndex + 1) % totalSlides;
-    goToSlide(nextIndex);
-  };
+  }, [activeIndex, isTransitioning]);
 
   const currentItem = timelineData[activeIndex];
+  
+  // Calculate progress on each render
+  const progress = getProgress();
   
   // Calculate current slide progress (0-100 for current slide only)
   const currentSlideProgress = ((progress * totalSlides) % 100);
@@ -205,11 +191,11 @@ const PSejarah = () => {
   return (
     <section 
       id="sejarah"
-      className="py-grid-10 relative overflow-hidden"
+      className="py-16 lg:py-24 relative overflow-hidden"
       aria-labelledby="sejarah-title"
     >
       {/* Animated Flowing Waves Background */}
-      <div className="absolute inset-0 bg-gradient-to-br from-[#0a1929] via-[#0d2847] to-[#1a2332]">
+      <div className="absolute inset-0 bg-gradient-to-br from-secondary-900 via-secondary-800 to-secondary-900">
         
         {/* Wave Layer 1 */}
         <div className="absolute inset-0 opacity-20">
@@ -302,50 +288,21 @@ const PSejarah = () => {
       </div>
 
       {/* Content */}
-      <div className="section-container relative z-10">
+      <div className="container mx-auto px-6 lg:px-16 relative z-10">
         
         {/* Header */}
-        <div className="flex items-center justify-between mb-grid-6">
-          <div>
-            <span className="inline-block px-grid-3 py-grid-1 bg-white/5 backdrop-blur-sm text-primary-400 rounded text-body-xs font-semibold mb-grid-2 uppercase tracking-wide border border-white/10">
-              Perjalanan Kami
-            </span>
-            <h2 id="sejarah-title" className="text-display-md lg:text-display-lg font-heading font-bold text-white">
-              Sejarah Perusahaan
-            </h2>
-          </div>
-          
-          {/* Navigation */}
-          <div className="flex items-center gap-grid-3">
-            <button
-              onClick={goToPrev}
-              className="w-9 h-9 rounded bg-white/5 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-white transition-all border border-white/10"
-              aria-label="Sebelumnya"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M15 19l-7-7 7-7" />
-              </svg>
-            </button>
-            
-            <span className="text-body-sm text-white/80 min-w-[60px] text-center tabular-nums font-medium">
-              {activeIndex + 1} / {totalSlides}
-            </span>
-            
-            <button
-              onClick={goToNext}
-              className="w-9 h-9 rounded bg-white/5 hover:bg-white/10 backdrop-blur-sm flex items-center justify-center text-white transition-all border border-white/10"
-              aria-label="Selanjutnya"
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          </div>
+        <div className="mb-12 lg:mb-16">
+          <span className="inline-block px-4 py-1.5 bg-white/5 backdrop-blur-sm text-primary-400 rounded-lg text-xs font-heading font-semibold mb-3 uppercase tracking-wider border border-white/10">
+            Perjalanan Kami
+          </span>
+          <h2 id="sejarah-title" className="text-3xl lg:text-5xl font-heading font-bold text-white leading-tight">
+            Sejarah Perusahaan
+          </h2>
         </div>
 
         {/* Progress Bar - Absolute Progress */}
-        <div className="mb-grid-8">
-          <div className="relative h-1.5 bg-white/5 backdrop-blur-sm rounded-full overflow-hidden border border-white/10">
+        <div className="mb-12 lg:mb-16">
+          <div className="relative h-2 bg-white/5 backdrop-blur-sm rounded-full overflow-hidden border border-white/10">
             {/* Background segments */}
             <div className="absolute inset-0 flex">
               {timelineData.map((_, index) => (
@@ -359,25 +316,25 @@ const PSejarah = () => {
             
             {/* Smooth continuous progress - NO JUMPING */}
             <div 
-              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-600 to-primary-500"
+              className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary-600 via-primary-500 to-primary-400"
               style={{ 
                 width: `${progress}%`,
-                boxShadow: '0 0 10px rgba(59, 130, 246, 0.5)',
+                boxShadow: '0 0 12px rgba(59, 130, 246, 0.6)',
                 transition: 'none' // Pure requestAnimationFrame, no CSS transition
               }}
             />
           </div>
           
           {/* Year markers */}
-          <div className="flex justify-between mt-grid-2 px-1">
+          <div className="flex justify-between mt-3 px-1">
             {timelineData.filter((_, i) => i % 2 === 0).map((item) => (
               <button
                 key={item.year}
                 onClick={() => goToSlide(timelineData.findIndex(d => d.year === item.year))}
-                className={`text-body-xs transition-all ${
+                className={`text-xs font-heading transition-all duration-300 ${
                   item.year === currentItem.year 
-                    ? 'text-primary-400 font-bold' 
-                    : 'text-white/50 hover:text-white/80'
+                    ? 'text-primary-400 font-bold scale-110' 
+                    : 'text-white/50 hover:text-white/80 hover:scale-105'
                 }`}
               >
                 {item.year}
@@ -387,14 +344,14 @@ const PSejarah = () => {
         </div>
 
         {/* Main Content */}
-        <div className="grid lg:grid-cols-5 gap-grid-6 items-center">
+        <div className="grid lg:grid-cols-5 gap-8 lg:gap-12 items-center">
           
           {/* Image */}
           <div className="lg:col-span-3 order-2 lg:order-1">
             <div 
               className={`
-                relative rounded overflow-hidden border border-white/10 shadow-2xl
-                transition-all duration-500
+                relative rounded-xl overflow-hidden border border-white/10 shadow-2xl
+                transition-all duration-500 ease-out
                 ${isTransitioning ? 'opacity-0 scale-95' : 'opacity-100 scale-100'}
               `}
             >
@@ -405,16 +362,16 @@ const PSejarah = () => {
                 loading="lazy"
               />
               
-              <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/50 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-t from-secondary-900/60 via-transparent to-transparent" />
               
               <div className={`
-                absolute top-4 right-4 px-grid-4 py-grid-2 rounded backdrop-blur-md shadow-xl border
+                absolute top-4 right-4 px-5 py-2 rounded-lg backdrop-blur-md shadow-xl border transition-all duration-300
                 ${currentItem.highlight 
-                  ? 'bg-primary-600 border-primary-400/30' 
+                  ? 'bg-primary-600 border-primary-400/30 scale-105' 
                   : 'bg-white/90 border-white/30'
                 }
               `}>
-                <span className={`text-body-lg font-bold ${currentItem.highlight ? 'text-white' : 'text-secondary-900'}`}>
+                <span className={`text-lg font-heading font-bold ${currentItem.highlight ? 'text-white' : 'text-secondary-900'}`}>
                   {currentItem.year}
                 </span>
               </div>
@@ -425,7 +382,7 @@ const PSejarah = () => {
                   className="h-full bg-primary-500"
                   style={{ 
                     width: `${currentSlideProgress}%`,
-                    boxShadow: '0 0 8px rgba(59, 130, 246, 0.6)',
+                    boxShadow: '0 0 10px rgba(59, 130, 246, 0.7)',
                     transition: 'none'
                   }}
                 />
@@ -437,42 +394,44 @@ const PSejarah = () => {
           <div className="lg:col-span-2 order-1 lg:order-2">
             <div 
               className={`
-                transition-all duration-500
+                transition-all duration-500 ease-out
                 ${isTransitioning ? 'opacity-0 translate-x-4' : 'opacity-100 translate-x-0'}
               `}
             >
               {currentItem.highlight && (
-                <div className="inline-flex items-center gap-grid-2 px-grid-3 py-grid-1 bg-primary-600/20 backdrop-blur-sm rounded border border-primary-500/30 mb-grid-3">
-                  <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" />
-                  <span className="text-body-xs font-semibold text-primary-300 uppercase tracking-wide">
+                <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-primary-600/20 backdrop-blur-sm rounded-lg border border-primary-500/30 mb-4">
+                  <span className="w-2 h-2 rounded-full bg-primary-400 animate-pulse shadow-lg shadow-primary-400/50" />
+                  <span className="text-xs font-heading font-semibold text-primary-300 uppercase tracking-wide">
                     Milestone Penting
                   </span>
                 </div>
               )}
               
-              <h3 className="text-display-sm lg:text-display-md font-heading font-bold text-white mb-grid-3 leading-tight">
+              <h3 className="text-2xl lg:text-4xl font-heading font-bold text-white mb-4 leading-tight">
                 {currentItem.title}
               </h3>
               
-              <p className="text-body-md text-white/85 leading-relaxed mb-grid-4">
+              <p className="text-base lg:text-lg text-white/90 leading-relaxed mb-6">
                 {currentItem.description}
               </p>
 
               {/* Navigation dots */}
-              <div className="flex items-center gap-grid-2">
+              <div className="flex items-center gap-2.5 flex-wrap">
                 {timelineData.map((_, index) => (
                   <button
                     key={index}
                     onClick={() => goToSlide(index)}
+                    disabled={isTransitioning}
                     className={`
-                      h-1.5 rounded-full transition-all duration-300
+                      h-2.5 rounded-full transition-all duration-300 disabled:cursor-not-allowed
                       ${index === activeIndex 
-                        ? 'w-8 bg-primary-500' 
-                        : 'w-1.5 bg-white/25 hover:bg-white/50'
+                        ? 'w-12 bg-primary-500' 
+                        : 'w-2.5 bg-white/30 hover:bg-white/60 hover:w-4'
                       }
                     `}
-                    style={index === activeIndex ? { boxShadow: '0 0 8px rgba(59, 130, 246, 0.6)' } : {}}
-                    aria-label={`Tahun ${timelineData[index].year}`}
+                    style={index === activeIndex ? { boxShadow: '0 0 12px rgba(59, 130, 246, 0.8)' } : {}}
+                    aria-label={`Slide ${index + 1}`}
+                    aria-current={index === activeIndex ? 'true' : 'false'}
                   />
                 ))}
               </div>
@@ -480,13 +439,6 @@ const PSejarah = () => {
           </div>
 
         </div>
-
-        {/* Auto-play indicator */}
-        <div className="mt-grid-6 flex items-center justify-center gap-grid-2 text-white/50 text-body-xs">
-          <div className="w-2 h-2 rounded-full bg-primary-400 animate-pulse" style={{ boxShadow: '0 0 6px rgba(59, 130, 246, 0.6)' }} />
-          <span>Otomatis berpindah setiap {AUTO_INTERVAL / 1000} detik</span>
-        </div>
-
       </div>
     </section>
   );

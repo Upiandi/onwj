@@ -1,14 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import ONWJ from '../../assets/bisnis/LOGO-HD.webp';
-import { FaBuilding, FaHandshake, FaLandmark, FaArrowRight, FaChartLine, FaUsers } from 'react-icons/fa';
+import PHE from '../../assets/bisnis/logo-pertamina.webp';
+import { FaBuilding, FaHandshake, FaLandmark, FaArrowRight, FaChartLine, FaUsers, FaCheckCircle, FaMapMarkerAlt } from 'react-icons/fa';
 
 const Bbisnis = () => {
+  const [hoveredCard, setHoveredCard] = useState(null);
+  const [hoveredShareholder, setHoveredShareholder] = useState(null);
+  
   // Combined Business Flow + Operational Pillars
   const businessOperations = {
     flow: [
       {
         name: 'PERTAMINA PHE ONWJ',
-        logo: ONWJ,
+        logo: PHE,
         description: 'Operator Lapangan',
         role: 'Pengelola operasional harian lapangan migas',
         icon: FaBuilding
@@ -82,22 +86,22 @@ const Bbisnis = () => {
       <div className="section-container relative">
         
         {/* ===== INTRO ===== */}
-        <section className="py-grid-10 text-center">
-          <div className="max-w-3xl mx-auto">
-            <span className="inline-block px-grid-4 py-grid-2 bg-secondary-100 text-secondary-700 rounded text-body-sm font-semibold mb-grid-3">
-              Alur Bisnis Kami
-            </span>
-            <h2 className="text-display-lg sm:text-display-xl font-heading font-bold text-secondary-900 mb-grid-3">
+        <section className="py-grid-12 text-center">
+          <div className="max-w-3xl mx-auto animate-slide-up">
+            <div className="inline-flex items-center gap-grid-2 px-grid-5 py-grid-2.5 bg-gradient-to-r from-primary-50 to-accent-50 border border-primary-200 rounded-full mb-grid-4 shadow-sm">
+              <div className="w-1.5 h-1.5 bg-primary-600 rounded-full animate-pulse"></div>
+              <span className="text-body-sm font-bold text-primary-700 tracking-wide">
+                Alur Bisnis Kami
+              </span>
+            </div>
+            <h2 className="text-display-lg sm:text-display-xl font-heading font-bold text-secondary-900 leading-tight">
               Bagaimana Kami Beroperasi
             </h2>
-            <p className="text-body-md text-secondary-600 leading-relaxed">
-              Memahami struktur operasional dan kolaborasi strategis dalam pengelolaan aset energi untuk menciptakan nilai berkelanjutan
-            </p>
           </div>
         </section>
 
         {/* ===== UNIFIED SECTION: Business Flow + Operations ===== */}
-        <section className="py-grid-8">
+        <section className="py-grid-3">
           
           <div className="max-w-6xl mx-auto">
             
@@ -116,23 +120,33 @@ const Bbisnis = () => {
               </div>
 
               {/* Flow Cards */}
-              <div className="relative z-10 grid lg:grid-cols-2 gap-grid-5 lg:gap-grid-8 mb-grid-8">
+              <div className="relative z-10 grid lg:grid-cols-2 gap-grid-6 lg:gap-grid-10 mb-grid-10">
                 {businessOperations.flow.map((item, index) => {
                   const IconComponent = item.icon;
+                  const isHovered = hoveredCard === index;
                   
                   return (
                     <article 
                       key={index}
-                      className="group relative bg-white border border-secondary-200 rounded p-grid-5 hover:border-primary-600 hover:shadow-sm transition-all duration-300"
+                      onMouseEnter={() => setHoveredCard(index)}
+                      onMouseLeave={() => setHoveredCard(null)}
+                      className="group relative bg-gradient-to-br from-white to-secondary-50/30 border-2 border-secondary-200 rounded-2xl p-grid-6 hover:border-primary-400 hover:shadow-2xl transition-all duration-500 ease-smart cursor-pointer overflow-hidden"
+                      style={{
+                        transform: isHovered ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
+                      }}
                       tabIndex={0}
                     >
+                      {/* Background Gradient Overlay */}
+                      <div className={`absolute inset-0 bg-gradient-to-br from-primary-50/0 to-primary-100/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none`}></div>
+                      
+                      {/* Step Number Badge */}
+                      <div className="absolute -top-3 -right-3 w-16 h-16 bg-gradient-to-br from-primary-600 to-primary-700 rounded-full flex items-center justify-center shadow-lg transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-500">
+                        <span className="text-white font-bold text-display-xs">{index + 1}</span>
+                      </div>
+
                       {/* Header Row */}
-                      <div className="flex items-center gap-grid-3 mb-grid-4">
-                        <span className="flex-shrink-0 w-7 h-7 rounded bg-secondary-900 text-white flex items-center justify-center font-bold text-body-sm">
-                          {index + 1}
-                        </span>
-                        
-                        <div className="flex-shrink-0 w-12 h-12 bg-secondary-50 rounded flex items-center justify-center p-1.5 border border-secondary-100">
+                      <div className="relative z-10 flex items-start gap-grid-4 mb-grid-5">
+                        <div className="flex-shrink-0 w-16 h-16 bg-white rounded-xl shadow-md flex items-center justify-center p-2 border border-secondary-100 group-hover:shadow-xl group-hover:scale-105 transition-all duration-300">
                           <img 
                             src={item.logo} 
                             alt={item.name}
@@ -140,24 +154,29 @@ const Bbisnis = () => {
                             loading="lazy"
                           />
                         </div>
-                        
-                        <div className="ml-auto flex-shrink-0 w-9 h-9 rounded bg-secondary-100 flex items-center justify-center text-secondary-700">
-                          <IconComponent className="w-4 h-4" />
-                        </div>
                       </div>
 
+
                       {/* Content */}
-                      <h3 className="font-heading font-bold text-body-lg text-secondary-900 mb-1.5 leading-tight">
-                        {item.name}
-                      </h3>
+                      <div className="relative z-10">
+                        <h3 className="font-heading font-bold text-body-xl text-secondary-900 mb-grid-2 leading-tight group-hover:text-primary-700 transition-colors duration-300">
+                          {item.name}
+                        </h3>
+                        
+                        <div className="inline-flex items-center gap-grid-2 px-grid-3 py-grid-1 bg-accent-100 rounded-full mb-grid-3">
+                          <div className="w-1.5 h-1.5 bg-accent-600 rounded-full"></div>
+                          <span className="text-body-xs font-bold text-accent-700">
+                            {item.description}
+                          </span>
+                        </div>
+                        
+                        <p className="text-body-md text-secondary-600 leading-relaxed">
+                          {item.role}
+                        </p>
+                      </div>
                       
-                      <p className="text-body-xs font-medium text-secondary-600 mb-2">
-                        {item.description}
-                      </p>
-                      
-                      <p className="text-body-sm text-secondary-600 leading-relaxed">
-                        {item.role}
-                      </p>
+                      {/* Decorative Corner */}
+                      <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-primary-100/20 to-transparent rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </article>
                   );
                 })}
@@ -173,35 +192,53 @@ const Bbisnis = () => {
               </div>
 
               {/* Operations Cards */}
-              <div className="grid lg:grid-cols-2 gap-grid-5">
+              <div className="grid lg:grid-cols-2 gap-grid-6">
                 {businessOperations.operations.map((point, index) => {
                   const IconComponent = point.icon;
                   return (
                     <article 
                       key={index}
-                      className="group bg-secondary-50 border border-secondary-200 rounded p-grid-5 hover:bg-white hover:border-primary-600 hover:shadow-sm transition-all duration-300"
+                      className="group relative bg-white border-2 border-secondary-200 rounded-2xl p-grid-6 hover:bg-gradient-to-br hover:from-white hover:to-accent-50/30 hover:border-accent-400 hover:shadow-xl transition-all duration-500 ease-smart cursor-pointer overflow-hidden"
                       tabIndex={0}
                     >
-                      <div className="flex items-center gap-grid-3 mb-grid-3">
-                        <div className="flex-shrink-0 w-9 h-9 rounded bg-secondary-900 text-white flex items-center justify-center">
-                          <IconComponent className="w-4 h-4" />
+                      {/* Animated Background Pattern */}
+                      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" 
+                           style={{
+                             backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%2314b8a6' fill-opacity='0.03'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
+                             backgroundSize: '30px 30px'
+                           }}
+                      ></div>
+                      
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-grid-3 mb-grid-4">
+                          <div className="flex-shrink-0 w-12 h-12 rounded-xl bg-gradient-to-br from-accent-500 to-accent-600 text-white flex items-center justify-center shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-300">
+                            <IconComponent className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1">
+                            <span className="inline-block px-grid-3 py-grid-1 bg-secondary-100 text-secondary-600 rounded-full text-body-xs font-bold">
+                              Pilar {index + 1}
+                            </span>
+                          </div>
                         </div>
-                        <span className="text-body-xs font-medium text-secondary-500">
-                          Pilar {index + 1}
-                        </span>
+                        
+                        <h4 className="font-heading font-bold text-body-xl text-secondary-900 mb-grid-2 group-hover:text-accent-700 transition-colors duration-300">
+                          {point.title}
+                        </h4>
+                        
+                        <div className="flex items-start gap-grid-2 mb-grid-3">
+                          <FaCheckCircle className="w-4 h-4 text-accent-600 flex-shrink-0 mt-0.5" />
+                          <p className="text-body-sm font-bold text-accent-700">
+                            {point.subtitle}
+                          </p>
+                        </div>
+
+                        <p className="text-body-md text-secondary-600 leading-relaxed">
+                          {point.description}
+                        </p>
                       </div>
                       
-                      <h4 className="font-heading font-bold text-body-lg text-secondary-900 mb-1.5">
-                        {point.title}
-                      </h4>
-                      
-                      <p className="text-body-sm font-semibold text-primary-600 mb-2">
-                        {point.subtitle}
-                      </p>
-
-                      <p className="text-body-sm text-secondary-600 leading-relaxed">
-                        {point.description}
-                      </p>
+                      {/* Corner Accent */}
+                      <div className="absolute top-0 right-0 w-24 h-24 bg-gradient-to-bl from-accent-100/40 to-transparent rounded-bl-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                     </article>
                   );
                 })}
@@ -211,121 +248,215 @@ const Bbisnis = () => {
           </div>
         </section>
 
-        {/* ===== SHAREHOLDERS - Professional & Clean ===== */}
-        <section className="py-grid-10 bg-secondary-50">
+        {/* ===== SHAREHOLDERS - Modern & Visual ===== */}
+        <section className="bg-gradient-to-b from-white via-secondary-50/50 to-white">
           
-          <div className="text-center mb-grid-6">
-            <span className="inline-block px-grid-4 py-grid-2 bg-white border border-secondary-200 text-secondary-700 rounded text-body-sm font-semibold mb-grid-2">
-              Struktur Kepemilikan
-            </span>
-            <h2 className="text-display-md sm:text-display-lg font-heading font-bold text-secondary-900 mb-grid-2">
-              Komposisi Shareholder
+          <div className="text-center mb-grid-10">
+            <div className="inline-flex items-center gap-grid-2 px-grid-5 py-grid-2.5 bg-gradient-to-r from-primary-50 to-warm-50 border border-primary-200 rounded-full mb-grid-4 shadow-sm">
+              <FaChartLine className="w-3.5 h-3.5 text-primary-600" />
+              <span className="text-body-sm font-bold text-primary-700 tracking-wide">
+                Struktur Kepemilikan
+              </span>
+            </div>
+            <h2 className="text-display-md sm:text-display-lg font-heading font-bold text-secondary-900 mb-grid-3">
+              Pemegang Saham
             </h2>
-            <p className="text-body-md text-secondary-600 max-w-2xl mx-auto">
-              Distribusi kepemilikan saham yang menunjukkan kolaborasi multi-stakeholder
-            </p>
           </div>
 
-          <div className="max-w-5xl mx-auto">
+          <div className="max-w-6xl mx-auto">
             
-            {/* Total Overview - Single Bar */}
-            <div className="mb-grid-8 bg-white rounded p-grid-6 border border-secondary-200">
-              <div className="flex items-center justify-between mb-grid-3">
-                <h3 className="font-heading font-bold text-body-md text-secondary-900">Total Kepemilikan Saham</h3>
-                <div className="flex items-center gap-grid-2 text-body-sm">
-                  <FaChartLine className="w-4 h-4 text-primary-600" />
-                  <span className="font-bold text-primary-600">100%</span>
-                </div>
-              </div>
-              
-              {/* Single Stacked Bar - 2 Colors Only */}
-              <div className="relative h-12 bg-secondary-100 rounded overflow-hidden">
-                {/* Major Shareholder - Primary Color */}
-                <div 
-                  className="absolute inset-y-0 left-0 bg-primary-600 flex items-center justify-center"
-                  style={{ width: `${shareholders[0].percentage}%` }}
-                >
-                  <span className="text-white font-bold text-body-sm">{shareholders[0].percentage}%</span>
-                </div>
+            {/* Donut Chart Visualization */}
+            <div className="mb-grid-12 bg-white rounded-2xl border-2 border-secondary-200 p-grid-8 shadow-lg">
+              <div className="grid lg:grid-cols-2 gap-grid-10 items-center">
                 
-                {/* Others - Gray Shades */}
-                {shareholders.slice(1).map((shareholder, index) => {
-                  const previousWidth = shareholders.slice(0, index + 1).reduce((sum, s) => sum + s.percentage, 0);
-                  const opacity = 100 - (index * 15);
-                  
-                  return (
-                    <div
-                      key={index}
-                      className="absolute inset-y-0 bg-secondary-600 flex items-center justify-center"
-                      style={{ 
-                        left: `${previousWidth}%`,
-                        width: `${shareholder.percentage}%`,
-                        opacity: `${opacity}%`
+                {/* Left: Donut Chart */}
+                <div className="flex flex-col items-center">
+                  <div className="relative w-64 h-64 mb-grid-6">
+                    {/* Donut Chart using conic-gradient */}
+                    <div 
+                      className="w-full h-full rounded-full relative shadow-2xl"
+                      style={{
+                        background: `conic-gradient(
+                          from 0deg,
+                          #2973b4 0% ${shareholders[0].percentage}%,
+                          #0d9488 ${shareholders[0].percentage}% ${shareholders[0].percentage + shareholders[1].percentage}%,
+                          #57534e ${shareholders[0].percentage + shareholders[1].percentage}% ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage}%,
+                          #78716c ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage}% ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage + shareholders[3].percentage}%,
+                          #a8a29e ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage + shareholders[3].percentage}% ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage + shareholders[3].percentage + shareholders[4].percentage}%,
+                          #d6d3d1 ${shareholders[0].percentage + shareholders[1].percentage + shareholders[2].percentage + shareholders[3].percentage + shareholders[4].percentage}% 100%
+                        )`
                       }}
                     >
-                      {shareholder.percentage > 5 && (
-                        <span className="text-white font-bold text-body-xs">{shareholder.percentage}%</span>
+                      {/* Center Hole */}
+                      <div className="absolute inset-0 m-auto w-36 h-36 bg-white rounded-full shadow-inner flex flex-col items-center justify-center">
+                        <span className="text-body-xs text-secondary-500 font-semibold mb-grid-1">Total</span>
+                        <span className="text-display-lg font-bold text-primary-600">100%</span>
+                        <span className="text-body-xs text-secondary-500 mt-grid-1">{shareholders.length} Pihak</span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Chart Legend */}
+                  <div className="grid grid-cols-2 gap-x-grid-4 gap-y-grid-2 w-full max-w-md">
+                    {shareholders.map((shareholder, index) => {
+                      const colors = ['#2973b4', '#0d9488', '#57534e', '#78716c', '#a8a29e', '#d6d3d1'];
+                      return (
+                        <div key={index} className="flex items-center gap-grid-2">
+                          <div 
+                            className="w-3 h-3 rounded-sm flex-shrink-0"
+                            style={{ backgroundColor: colors[index] }}
+                          ></div>
+                          <span className="text-body-xs text-secondary-700 font-medium truncate">
+                            {shareholder.name}
+                          </span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+                
+                {/* Right: Horizontal Bar Chart */}
+                <div className="space-y-grid-4">
+                  <h3 className="font-heading font-bold text-body-xl text-secondary-900 mb-grid-4">
+                    Distribusi Kepemilikan
+                  </h3>
+                  
+                  {shareholders.map((shareholder, index) => {
+                    const colors = [
+                      { bg: 'bg-primary-600', text: 'text-primary-700', light: 'bg-primary-50' },
+                      { bg: 'bg-accent-600', text: 'text-accent-700', light: 'bg-accent-50' },
+                      { bg: 'bg-secondary-600', text: 'text-secondary-700', light: 'bg-secondary-100' },
+                      { bg: 'bg-secondary-500', text: 'text-secondary-600', light: 'bg-secondary-50' },
+                      { bg: 'bg-secondary-400', text: 'text-secondary-500', light: 'bg-secondary-50' },
+                      { bg: 'bg-secondary-300', text: 'text-secondary-400', light: 'bg-secondary-50' }
+                    ];
+                    const color = colors[index];
+                    
+                    return (
+                      <div key={index} className="group">
+                        <div className="flex items-center justify-between mb-grid-1.5">
+                          <div className="flex items-center gap-grid-2">
+                            <span className={`inline-flex items-center justify-center w-5 h-5 rounded text-body-xs font-bold text-white ${color.bg}`}>
+                              {index + 1}
+                            </span>
+                            <span className="text-body-sm font-semibold text-secondary-900">
+                              {shareholder.name}
+                            </span>
+                          </div>
+                          <span className={`text-body-md font-bold ${color.text}`}>
+                            {shareholder.percentage}%
+                          </span>
+                        </div>
+                        
+                        {/* Animated Bar */}
+                        <div className={`relative h-3 ${color.light} rounded-full overflow-hidden`}>
+                          <div 
+                            className={`h-full ${color.bg} rounded-full transition-all duration-1000 ease-out group-hover:opacity-90`}
+                            style={{ 
+                              width: `${shareholder.percentage}%`,
+                              animation: `slideFromLeft 1s ease-out ${index * 100}ms forwards`,
+                              transformOrigin: 'left'
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+            
+            {/* Visual Donut Chart Alternative - Modern Cards Grid */}
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-grid-5 mb-grid-10">
+              {shareholders.map((shareholder, index) => {
+                const isHovered = hoveredShareholder === index;
+                const isMajor = index === 0;
+                
+                return (
+                  <article 
+                    key={index}
+                    onMouseEnter={() => setHoveredShareholder(index)}
+                    onMouseLeave={() => setHoveredShareholder(null)}
+                    className={`group relative bg-white border-2 rounded-2xl p-grid-5 transition-all duration-500 ease-smart cursor-pointer overflow-hidden ${
+                      isMajor 
+                        ? 'border-primary-300 hover:border-primary-500 hover:shadow-2xl' 
+                        : 'border-secondary-200 hover:border-accent-300 hover:shadow-xl'
+                    }`}
+                    style={{
+                      transform: isHovered ? 'translateY(-8px) scale(1.03)' : 'translateY(0) scale(1)',
+                    }}
+                    tabIndex={0}
+                  >
+                    {/* Background Gradient */}
+                    <div className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                      isMajor 
+                        ? 'bg-gradient-to-br from-primary-50 to-primary-100/50' 
+                        : 'bg-gradient-to-br from-accent-50/50 to-secondary-50'
+                    }`}></div>
+                    
+                    {/* Rank Badge */}
+                    <div className={`absolute top-4 right-4 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-body-md shadow-lg transform group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 ${
+                      isMajor 
+                        ? 'bg-gradient-to-br from-primary-600 to-primary-700 text-white' 
+                        : 'bg-gradient-to-br from-secondary-700 to-secondary-800 text-white'
+                    }`}>
+                      {shareholder.rank}
+                    </div>
+
+                    {/* Content */}
+                    <div className="relative z-10">
+                      <h4 className={`font-heading font-bold text-body-lg mb-grid-3 leading-tight pr-8 ${
+                        isMajor ? 'text-primary-900' : 'text-secondary-900'
+                      }`}>
+                        {shareholder.name}
+                      </h4>
+                      
+                      {/* Percentage Display */}
+                      <div className="mb-grid-4">
+                        <div className="flex items-baseline gap-grid-2 mb-grid-2">
+                          <span className={`font-bold text-display-md ${
+                            isMajor ? 'text-primary-600' : 'text-accent-600'
+                          }`}>
+                            {shareholder.percentage}%
+                          </span>
+                          <span className="text-body-xs text-secondary-500 font-medium">kepemilikan</span>
+                        </div>
+                        
+                        {/* Progress Bar */}
+                        <div className="relative h-2.5 bg-secondary-100 rounded-full overflow-hidden">
+                          <div 
+                            className={`absolute inset-y-0 left-0 rounded-full transition-all duration-1000 ease-out ${
+                              isMajor 
+                                ? 'bg-gradient-to-r from-primary-600 to-primary-500' 
+                                : 'bg-gradient-to-r from-accent-600 to-accent-500'
+                            }`}
+                            style={{ 
+                              width: isHovered ? `${shareholder.percentage}%` : '0%',
+                              transitionDelay: `${index * 50}ms`
+                            }}
+                          ></div>
+                        </div>
+                      </div>
+                      
+                      {/* Status Badge */}
+                      {isMajor && (
+                        <div className="inline-flex items-center gap-grid-2 px-grid-3 py-grid-1.5 bg-primary-100 border border-primary-200 rounded-full">
+                          <div className="w-1.5 h-1.5 bg-primary-600 rounded-full animate-pulse"></div>
+                          <span className="text-body-xs font-bold text-primary-700">Pemegang Saham Mayoritas</span>
+                        </div>
                       )}
                     </div>
-                  );
-                })}
-              </div>
-
-              {/* Legend - Clean List */}
-              <div className="mt-grid-4 pt-grid-4 border-t border-secondary-100 grid grid-cols-2 md:grid-cols-3 gap-x-grid-6 gap-y-grid-2">
-                {shareholders.map((shareholder, index) => (
-                  <div key={index} className="flex items-center gap-grid-2">
-                    <div className={`w-3 h-3 rounded-sm ${index === 0 ? 'bg-primary-600' : 'bg-secondary-600'}`} style={{ opacity: index === 0 ? 1 : `${100 - (index - 1) * 15}%` }}></div>
-                    <span className="text-body-xs text-secondary-700 font-medium">{shareholder.name}</span>
-                  </div>
-                ))}
-              </div>
+                    
+                    {/* Corner Decoration */}
+                    <div className={`absolute bottom-0 right-0 w-20 h-20 rounded-tl-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
+                      isMajor 
+                        ? 'bg-gradient-to-tl from-primary-100/30 to-transparent' 
+                        : 'bg-gradient-to-tl from-accent-100/30 to-transparent'
+                    }`}></div>
+                  </article>
+                );
+              })}
             </div>
-
-            {/* Individual Cards - Minimalist Table-like Design */}
-            <div className="bg-white rounded border border-secondary-200 overflow-hidden">
-              {shareholders.map((shareholder, index) => (
-                <article 
-                  key={index}
-                  className={`group flex items-center gap-grid-4 p-grid-4 hover:bg-secondary-50 transition-colors ${index !== shareholders.length - 1 ? 'border-b border-secondary-100' : ''}`}
-                  tabIndex={0}
-                >
-                  {/* Rank */}
-                  <div className="flex-shrink-0 w-8 h-8 rounded bg-secondary-100 text-secondary-700 flex items-center justify-center font-bold text-body-xs group-hover:bg-secondary-900 group-hover:text-white transition-colors">
-                    {shareholder.rank}
-                  </div>
-
-                  {/* Name */}
-                  <h4 className="flex-1 font-semibold text-body-sm text-secondary-900">
-                    {shareholder.name}
-                  </h4>
-
-                  {/* Percentage - Large */}
-                  <div className={`flex-shrink-0 font-bold text-body-xl ${index === 0 ? 'text-primary-600' : 'text-secondary-900'}`}>
-                    {shareholder.percentage}%
-                  </div>
-
-                  {/* Mini Bar - Subtle Indicator */}
-                  <div className="flex-shrink-0 w-24 h-1.5 bg-secondary-100 rounded-full overflow-hidden">
-                    <div 
-                      className={`h-full rounded-full ${index === 0 ? 'bg-primary-600' : 'bg-secondary-600'}`}
-                      style={{ width: `${shareholder.percentage}%` }}
-                    ></div>
-                  </div>
-                </article>
-              ))}
-            </div>
-
-            {/* Summary */}
-            <div className="mt-grid-5 text-center">
-              <div className="inline-flex items-center gap-grid-2 px-grid-5 py-grid-2 bg-white border border-secondary-200 rounded text-body-sm">
-                <FaUsers className="w-4 h-4 text-secondary-600" />
-                <span className="text-secondary-600">
-                  <span className="font-bold text-secondary-900">{shareholders.length}</span> Pemegang Saham
-                </span>
-              </div>
-            </div>
-
           </div>
         </section>
       </div>

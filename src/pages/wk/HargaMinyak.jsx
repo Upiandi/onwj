@@ -19,10 +19,10 @@ const MONTHS = [
 ];
 
 const OIL_TYPES = {
-  brent: { label: 'Brent Crude', color: '#3b82f6', gradient: 'from-blue-500 to-blue-600' },
-  duri: { label: 'Duri Crude', color: '#f59e0b', gradient: 'from-amber-500 to-amber-600' },
-  ardjuna:  { label: 'Ardjuna Crude', color: '#10b981', gradient: 'from-emerald-500 to-emerald-600' },
-  kresna: { label: 'Kresna Crude', color: '#8b5cf6', gradient: 'from-violet-500 to-violet-600' },
+  brent: { label: 'Brent', color: '#3b82f6', gradient: 'from-blue-500 to-blue-600' },
+  duri: { label: 'Duri', color: '#f59e0b', gradient: 'from-amber-500 to-amber-600' },
+  ardjuna:  { label: 'Ardjuna', color: '#10b981', gradient: 'from-emerald-500 to-emerald-600' },
+  kresna: { label: 'Kresna', color: '#8b5cf6', gradient: 'from-violet-500 to-violet-600' },
 };
 
 const YEARS = ['2021', '2022', '2023', '2024', '2025'];
@@ -77,11 +77,6 @@ const StatsCard = ({ title, value, change, color, gradient, isConstant }) => {
           }`}>
             {isPositive ? <FaArrowUp className="w-3 h-3" /> : <FaArrowDown className="w-3 h-3" />}
             {Math.abs(change).toFixed(2)}%
-          </div>
-        )}
-        {isConstant && (
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-sm font-semibold bg-gray-100 text-gray-600">
-            Konstan
           </div>
         )}
       </div>
@@ -396,6 +391,9 @@ const HargaMinyakPage = () => {
                   tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }}
                   tickLine={{ stroke: '#e5e7eb' }}
                   axisLine={{ stroke: '#d1d5db' }}
+                  interval="preserveStartEnd"
+                  minTickGap={30}
+                  label={{ value: 'Tanggal', position: 'insideBottom', offset: -5, style: { fill: '#374151', fontWeight: 600, fontSize: 13 } }}
                 />
                 <YAxis
                   tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 500 }}
@@ -403,6 +401,7 @@ const HargaMinyakPage = () => {
                   axisLine={{ stroke: '#d1d5db' }}
                   domain={['dataMin - 5', 'dataMax + 5']}
                   tickFormatter={(value) => `$${value}`}
+                  label={{ value: 'Harga', angle: -90, position: 'insideLeft', style: { fill: '#374151', fontWeight: 600, fontSize: 13 } }}
                 />
                 <Tooltip content={<CustomTooltip />} />
                 <Legend 
@@ -420,8 +419,8 @@ const HargaMinyakPage = () => {
                     strokeWidth={3}
                     fillOpacity={1}
                     fill={`url(#color${key})`}
-                    dot={false}
-                    activeDot={false}
+                    dot={{ r: 2, fill: oil.color, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: oil.color, stroke: '#fff', strokeWidth: 2 }}
                   />
                 ))}
               </AreaChart>

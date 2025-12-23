@@ -130,7 +130,7 @@ const PenghargaanPage = () => {
       <MediaHero />
       <MediaSubNav />
       
-      <div className="section-container py-16">
+      <div className="section-container py-8">
         
         {/* Header Section */}
         <div className="max-w-3xl mx-auto text-center mb-14">

@@ -64,13 +64,6 @@ const FeaturedUmkm = ({ item }) => {
                             </blockquote>
                         )}
 
-                        {item.achievement && (
-                            <div className="bg-white p-4 rounded-lg shadow-sm">
-                                <p className="text-sm font-semibold text-gray-700 mb-1">📈 Pencapaian:</p>
-                                <p className="text-gray-600">{item.achievement}</p>
-                            </div>
-                        )}
-
                         <div className="flex flex-wrap gap-3">
                             {item.shop_link && (
                                 <a 

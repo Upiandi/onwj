@@ -513,7 +513,7 @@ const AllProgramsPage = () => {
         <div className="container mx-auto px-8 lg:px-16">
           <div className="text-center mb-12">
             <h2 id="testimonials-heading" className="text-3xl font-bold text-gray-900 mb-3">
-              Voices From The Community
+              Voices From Communities
             </h2>
             <p className="text-gray-600 max-w-2xl mx-auto">
               Testimoni dari masyarakat yang merasakan manfaat langsung dari program-program kami
