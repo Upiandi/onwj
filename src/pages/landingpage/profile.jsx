@@ -192,7 +192,7 @@ const ProfileSection = ({ sectionRef, imageRef, contentRef }) => (
           {/* Description */}
           <div className="space-y-grid-2">
             <p className="text-body-md sm:text-body-lg text-secondary-600 leading-relaxed text-pretty">
-              MUJ ONWJ adalah Badan Usaha Milik Daerah yang mengelola 10% hak Participating Interest di blok Offshore North West Java (ONWJ),
+              MUJ ONWJ adalah yang mengelola 10% hak Participating Interest di blok Offshore North West Java (ONWJ),
               dibentuk lewat mandat pemerintah daerah dan resmi beroperasi sejak 2019. Kami berdiri atas fondasi tata kelola transparan,
               profesionalisme tinggi, dan komitmen menghadirkan manfaat energi bagi masyarakat dan daerah pemegang saham.
             </p>
