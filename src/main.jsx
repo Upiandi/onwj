@@ -2,7 +2,6 @@ import { StrictMode, lazy, Suspense } from 'react';
 import { createRoot } from 'react-dom/client';
 import { createBrowserRouter, RouterProvider, ScrollRestoration } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
-import { SettingsProvider } from './context/SettingsContext'; // AuthProvider aku buang ya
 import './index.css';
 
 // ==== KEEP EAGER (Critical for first paint) ====
@@ -38,7 +37,6 @@ const GalleryPage = lazy(() => import('./pages/GalleryPage'));
 const Mainwk = lazy(() => import('./pages/wk/mainwk'));
 
 // ==== LAZY LOAD ADMIN PAGES ====
-// LoginPage gausah di-load karena kita ga pake login
 const AdminLayout = lazy(() => import('./pages/admin/AdminLayout'));
 const DashboardPage = lazy(() => import('./pages/admin/DashboardPage'));
 
@@ -123,7 +121,6 @@ const router = createBrowserRouter([
   // ==== ADMIN ROUTES (TANPA LOGIN/PROTECTION) ====
   {
     path: '/tukang-minyak-dan-gas',
-    // Langsung render AdminLayout tanpa ProtectedRoute wrapper
     element: (
         <Suspense fallback={<LoadingFallback />}>
           <AdminLayout />
@@ -170,34 +167,22 @@ const router = createBrowserRouter([
 // ==== RENDER APP ====
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      {/* AuthProvider udah aku hapus */}
-      <SettingsProvider>
-        <RouterProvider router={router} />
+      {/* Di sini udah bersih.
+         Gak ada AuthProvider.
+         Gak ada SettingsProvider.
+         Murni Router doang.
+      */}
+      <RouterProvider router={router} />
 
-        <Toaster
-          position="top-right"
-          toastOptions={{
-            duration: 3000,
-            style: {
-              background: '#363636',
-              color: '#fff',
-            },
-            success: {
-              duration: 3000,
-              iconTheme: {
-                primary: '#4ade80',
-                secondary: '#fff',
-              },
-            },
-            error: {
-              duration: 4000,
-              iconTheme: {
-                primary: '#ef4444',
-                secondary: '#fff',
-              },
-            },
-          }}
-        />
-      </SettingsProvider>
+      <Toaster 
+        position="top-right"
+        toastOptions={{
+          duration: 3000,
+          style: {
+            background: '#363636',
+            color: '#fff',
+          },
+        }}
+      />
   </StrictMode>
 );

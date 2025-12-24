@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useAuth } from '../../hooks/useAuth';
+// import { useAuth } from '../../hooks/useAuth'; <--- INI BIANG KEROKNYA, KITA BUANG
 import { format } from 'date-fns';
 import { id } from 'date-fns/locale';
 import { 
@@ -9,7 +9,13 @@ import {
 } from 'react-icons/fa';
 
 const DashboardPage = () => {
-    const { user } = useAuth();
+    // ==== GANTI useAuth DENGAN DATA PALSU ====
+    const user = {
+        name: "Admin Developer",
+        email: "dev@mujonwj.co.id",
+        last_login_at: new Date().toISOString() // Biar seolah-olah baru login
+    };
+
     const [stats, setStats] = useState({
         totalBerita: 0,
         beritaPublished: 0,
@@ -37,13 +43,15 @@ const DashboardPage = () => {
             setLoading(true);
             const API_URL = import.meta.env.VITE_API_URL;
 
+            // Note: Karena gak ada backend, ini bakal error/kosong.
+            // Tapi aku pasangin pengaman (.catch) biar gak crash websitenya.
             const [beritaRes, umkmRes, testimonialRes, laporanRes, penghargaanRes, wkTjslRes] = await Promise.all([
-                fetch(`${API_URL}/v1/admin/berita? per_page=999`). then(r => r.json()). catch(() => ({ data: [] })),
+                fetch(`${API_URL}/v1/admin/berita?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
                 fetch(`${API_URL}/v1/admin/umkm?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
-                fetch(`${API_URL}/v1/admin/testimonial? per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
+                fetch(`${API_URL}/v1/admin/testimonial?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
                 fetch(`${API_URL}/v1/admin/laporan?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
                 fetch(`${API_URL}/v1/admin/penghargaan?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
-                fetch(`${API_URL}/v1/admin/wk-tjsl?per_page=999`). then(r => r.json()). catch(() => ({ data: [] })),
+                fetch(`${API_URL}/v1/admin/wk-tjsl?per_page=999`).then(r => r.json()).catch(() => ({ data: [] })),
             ]);
 
             const berita = beritaRes.data || [];
@@ -55,10 +63,10 @@ const DashboardPage = () => {
 
             setStats({
                 totalBerita: berita.length,
-                beritaPublished: berita.filter(b => b. status === 'Published').length,
+                beritaPublished: berita.filter(b => b.status === 'Published').length,
                 beritaDraft: berita.filter(b => b.status === 'Draft').length,
                 totalUMKM: umkm.length,
-                umkmFeatured: umkm.filter(u => u.is_featured). length,
+                umkmFeatured: umkm.filter(u => u.is_featured).length,
                 totalTestimonial: testimonial.length,
                 testimonialPublished: testimonial.filter(t => t.status === 'Published').length,
                 totalPenghargaan: penghargaan.length,
@@ -69,13 +77,21 @@ const DashboardPage = () => {
 
         } catch (error) {
             console.error('Failed to fetch stats:', error);
+            // Kalau error parah, set ke 0 semua biar ga blank
+            setStats({
+                totalBerita: 0, beritaPublished: 0, beritaDraft: 0,
+                totalUMKM: 0, umkmFeatured: 0,
+                totalTestimonial: 0, testimonialPublished: 0,
+                totalPenghargaan: 0, totalLaporan: 0,
+                totalWkTjsl: 0, totalWkTekkom: 0
+            });
         } finally {
             setLoading(false);
         }
     };
 
     const getGreeting = () => {
-        const hour = new Date(). getHours();
+        const hour = new Date().getHours();
         if (hour < 12) return 'Selamat Pagi';
         if (hour < 15) return 'Selamat Siang';
         if (hour < 18) return 'Selamat Sore';
@@ -92,7 +108,7 @@ const DashboardPage = () => {
         },
         {
             title: 'UMKM Binaan',
-            total: stats. totalUMKM,
+            total: stats.totalUMKM,
             icon: FaStore,
             url: '/tukang-minyak-dan-gas/manage-umkm',
             details: `${stats.umkmFeatured} Featured`
@@ -113,7 +129,7 @@ const DashboardPage = () => {
         },
         {
             title: 'Laporan Tahunan',
-            total: stats. totalLaporan,
+            total: stats.totalLaporan,
             icon: FaFilePdf,
             url: '/tukang-minyak-dan-gas/manage-laporan',
             details: 'Annual Reports'
@@ -131,15 +147,15 @@ const DashboardPage = () => {
         <div className="space-y-8">
             {/* Header with Account Info & Clock */}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                {/* Account Info - Sekarang di kiri atas */}
+                {/* Account Info */}
                 <div className="lg:col-span-2 bg-gradient-to-r from-blue-600 to-blue-700 rounded-lg shadow-md p-6 text-white">
                     <div className="flex items-center gap-4 mb-4">
                         <div className="w-20 h-20 bg-white bg-opacity-20 backdrop-blur rounded-full flex items-center justify-center text-3xl font-bold border-2 border-white border-opacity-30">
-                            {user?.name?.charAt(0). toUpperCase()}
+                            {user?.name?.charAt(0).toUpperCase()}
                         </div>
                         <div className="flex-1">
                             <h1 className="text-2xl font-bold mb-1">
-                                {getGreeting()}, {user?.name || 'Admin'}! 
+                                {getGreeting()}, {user?.name}! 
                             </h1>
                             <p className="text-blue-100">
                                 {user?.email}
@@ -161,7 +177,7 @@ const DashboardPage = () => {
                     )}
                 </div>
 
-                {/* Live Clock - Di kanan atas */}
+                {/* Live Clock */}
                 <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-6 flex flex-col justify-center items-center">
                     <div className="flex items-center gap-2 text-gray-600 mb-2">
                         <FaClock className="w-4 h-4 text-blue-600" />
@@ -185,7 +201,7 @@ const DashboardPage = () => {
                         </div>
                     </div>
                     <div className="text-3xl font-bold text-gray-900 mb-1">
-                        {loading ? '.. .' : stats.totalBerita + stats.totalUMKM + stats.totalTestimonial}
+                        {loading ? '...' : stats.totalBerita + stats.totalUMKM + stats.totalTestimonial}
                     </div>
                     <div className="text-sm text-gray-600 font-medium">Total Konten</div>
                 </div>
@@ -221,7 +237,7 @@ const DashboardPage = () => {
                         </div>
                     </div>
                     <div className="text-3xl font-bold text-gray-900 mb-1">
-                        {loading ? '.. .' : stats.testimonialPublished}
+                        {loading ? '...' : stats.testimonialPublished}
                     </div>
                     <div className="text-sm text-gray-600 font-medium">Testimonial Published</div>
                 </div>

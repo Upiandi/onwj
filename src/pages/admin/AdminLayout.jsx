@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { Link, Outlet, NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../../hooks/useAuth';
-import { useToast } from '../../hooks/useToast';
+// import { useAuth } from '../../hooks/useAuth'; <--- HAPUS INI
+// import { useToast } from '../../hooks/useToast'; <--- HAPUS INI
 import logo from '../../assets/LOGO-HD.webp';
 import { 
     FaTachometerAlt, FaSignOutAlt, FaChevronDown, 
     FaUsers, FaHardHat, FaWallet, FaBuilding, FaFileExcel
 } from 'react-icons/fa';
 
-// Sidebar Link
+// Sidebar Link (TETAP SAMA)
 const SidebarLink = ({ to, icon, label, badge }) => {
     const navLinkClasses = ({ isActive }) =>
         `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
@@ -32,8 +32,7 @@ const SidebarLink = ({ to, icon, label, badge }) => {
     );
 };
 
-// Sidebar Dropdown
-// Sidebar Dropdown
+// Sidebar Dropdown (TETAP SAMA)
 const SidebarDropdown = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
 
@@ -41,9 +40,6 @@ const SidebarDropdown = ({ title, children }) => {
         <div>
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                // PERUBAHAN DISINI:
-                // 1. Hapus 'justify-between'
-                // 2. Tambah 'gap-2' (atau gap-3 sesuai selera)
                 className="flex items-center gap-2 px-4 py-3 w-full rounded-lg text-gray-600 hover:bg-gray-100 hover:text-gray-900 transition-colors"
             >
                 <span className="font-medium">{title}</span>
@@ -67,18 +63,19 @@ const SidebarDropdown = ({ title, children }) => {
 
 const AdminLayout = () => {
     const navigate = useNavigate();
-    const { user, logout, loading } = useAuth();
-    const { showSuccess, showError } = useToast();
+    
+    // ==== BAGIAN INI DIMODIFIKASI BIAR GAK ERROR ====
+    
+    // 1. Kita bikin User Palsu biar tampilan sidebar tetep bagus
+    const user = {
+        name: "Admin Developer",
+        email: "dev@mujonwj.co.id"
+    };
 
-    const handleLogout = async () => {
-        if (window.confirm('Apakah Anda yakin ingin logout?')) {
-            try {
-                await logout();
-                showSuccess('Logout berhasil!');
-                navigate('/tukang-minyak-dan-gas/login');
-            } catch (error) {
-                showError('Gagal logout');
-            }
+    // 2. Fungsi Logout diganti jadi 'Kembali ke Home'
+    const handleLogout = () => {
+        if (window.confirm('Keluar dari Admin Panel?')) {
+            navigate('/'); // Balik ke halaman utama public
         }
     };
 
@@ -89,14 +86,6 @@ const AdminLayout = () => {
                 : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
         }`;
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-            </div>
-        );
-    }
-
     return (
         <div className="flex min-h-screen bg-gray-50">
             {/* SIDEBAR */}
@@ -104,7 +93,7 @@ const AdminLayout = () => {
 
                 {/* Logo */}
                 <div className="p-6 border-b border-gray-200">
-                    <Link to="/tukang-minyak-dan-gas" className="flex items-center gap-3">
+                    <Link to="/tukang-minyak-dan-gas/dashboard" className="flex items-center gap-3">
                         <img src={logo} alt="Logo" className="h-10 w-10" />
                         <div>
                             <h2 className="font-bold text-gray-900">Admin Panel</h2>
@@ -113,24 +102,22 @@ const AdminLayout = () => {
                     </Link>
                 </div>
 
-                {/* User Info */}
-                {user && (
-                    <div className="p-4 border-b border-gray-200">
-                        <div className="flex items-center gap-3">
-                            <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
-                                {user.name?.charAt(0).toUpperCase()}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-sm font-semibold text-gray-900 truncate">
-                                    {user.name}
-                                </p>
-                                <p className="text-xs text-gray-500 truncate">
-                                    {user.email}
-                                </p>
-                            </div>
+                {/* User Info (MOCK DATA) */}
+                <div className="p-4 border-b border-gray-200">
+                    <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-semibold">
+                            {user.name.charAt(0).toUpperCase()}
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <p className="text-sm font-semibold text-gray-900 truncate">
+                                {user.name}
+                            </p>
+                            <p className="text-xs text-gray-500 truncate">
+                                {user.email}
+                            </p>
                         </div>
                     </div>
-                )}
+                </div>
 
                 {/* NAVIGATION */}
                 <nav className="flex-1 p-4 space-y-2 overflow-y-auto overflow-x-hidden">
@@ -219,21 +206,21 @@ const AdminLayout = () => {
                             Kelola Manajemen
                         </NavLink>
 
-                        {/* NEW — PENGATURAN WEBSITE */}
+                        {/* PENGATURAN WEBSITE */}
                         <NavLink to="/tukang-minyak-dan-gas/manage-settings" className={subLinkClasses}>
                             Pengaturan Website
                         </NavLink>
                     </SidebarDropdown>
                 </nav>
 
-                {/* Logout */}
+                {/* Logout (MODIFIED) */}
                 <div className="p-4 border-t border-gray-200">
                     <button
                         onClick={handleLogout}
                         className="flex items-center gap-3 w-full px-4 py-3 rounded-lg text-red-600 hover:bg-red-50 hover:text-red-700 transition-colors"
                     >
                         <FaSignOutAlt />
-                        <span>Logout</span>
+                        <span>Keluar Admin</span>
                     </button>
                 </div>
             </aside>

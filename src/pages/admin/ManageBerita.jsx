@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { FaEdit, FaTrash, FaPlus, FaImage, FaTimes, FaNewspaper, FaCalendar, FaUser, FaEye, FaSave, FaCheck, FaSearch, FaFilter, FaArrowLeft, FaFileExcel, FaSpinner, FaCog, FaGlobe } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import * as XLSX from 'xlsx';
-import { beritaAdminApi } from '../../services/BeritaService';
 import toast from 'react-hot-toast';
 
 const ManageBerita = () => {
